@@ -1,2 +1,10 @@
-// Popup stub — implemented in Task 8
-document.getElementById('root')!.textContent = 'Loading...'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import '../shared/styles.css'
+import { PopupApp } from './PopupApp'
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <PopupApp />
+  </React.StrictMode>
+)

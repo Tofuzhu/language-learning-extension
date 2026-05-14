@@ -1,2 +1,10 @@
-// Options stub — implemented in Task 11
-document.getElementById('root')!.textContent = '设置（开发中）'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import '../shared/styles.css'
+import { OptionsPage } from './OptionsPage'
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <OptionsPage />
+  </React.StrictMode>
+)
