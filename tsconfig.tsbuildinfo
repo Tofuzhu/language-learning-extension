@@ -1,0 +1,1 @@
+{"root":["./src/background/index.ts","./src/content/index.tsx","./src/options/index.tsx","./src/popup/index.tsx","./src/sidepanel/index.tsx","./tests/setup.ts"],"version":"6.0.3"}
