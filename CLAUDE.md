@@ -39,10 +39,10 @@ Chrome extension for language learning on YouTube. Replicates core Language Reac
 
 ## Spec & Plans
 
-- **Spec:** `../docs/superpowers/specs/2026-05-14-language-learning-extension-design.md`
-- **Plan 1 (Foundation):** `../docs/superpowers/plans/2026-05-14-plan1-foundation.md` ✅ 完成（2026-05-14）
-- **Plan 2 (字幕+播放控制):** `../docs/superpowers/plans/2026-05-14-plan2-subtitles.md` ← 下一步
-- **Plan 3 (词库+字典):** `../docs/superpowers/plans/2026-05-14-plan3-vocabulary.md`
+- **Spec:** `docs/superpowers/specs/2026-05-14-language-learning-extension-design.md`
+- **Plan 1 (Foundation):** `docs/superpowers/plans/2026-05-14-plan1-foundation.md` ✅ 完成（2026-05-14）
+- **Plan 2 (字幕+播放控制):** `docs/superpowers/plans/2026-05-14-plan2-subtitles.md` ← 下一步
+- **Plan 3 (词库+字典):** `docs/superpowers/plans/2026-05-14-plan3-vocabulary.md`
 
 ## Tech Stack
 
