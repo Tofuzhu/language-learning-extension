@@ -28,7 +28,8 @@
   "content_scripts": [
     {
       "matches": ["https://www.youtube.com/watch*"],
-      "js": ["src/content/index.tsx"]
+      "js": ["src/content/index.tsx"],
+      "run_at": "document_idle"
     }
   ]
 }
