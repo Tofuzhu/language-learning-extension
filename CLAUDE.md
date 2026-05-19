@@ -4,7 +4,7 @@ Chrome extension for language learning on YouTube. Replicates core Language Reac
 
 ---
 
-## 📋 用户使用说明（当前版本 v0.1 — Plan 1 已完成）
+## 📋 用户使用说明（当前版本 v0.2 — Plan 2 进行中）
 
 ### 目前可用的功能
 
@@ -16,21 +16,27 @@ Chrome extension for language learning on YouTube. Replicates core Language Reac
 **2. 设置页面**
 - 点击弹窗中的「⚙️ 设置」按钮打开
 - 设置「我正在学习的语言」和「我的母语」（支持英语/西班牙语/中文）
-- 调整字幕字号、颜色标注开关（字幕功能在 Plan 2 实现后生效）
-- 管理本地档案：新建、改名、切换、删除
+- 调整字幕字号、颜色标注开关
 
-### 目前在 YouTube 上看不到任何变化 — 这是正常的
+**3. YouTube 双语字幕叠层（Plan 2 — 开发中）**
+- 打开任意有字幕的 YouTube 视频后，扩展自动抓取字幕
+- 字幕以原文+译文形式显示在视频画面底部
+- 右侧面板显示全部字幕列表，当前句蓝色高亮
+- 左侧：`‹ ↺ ›` 上/重播/下句按钮
+- 右侧：AP 自动暂停、速度选择、译文开关
+- 快捷键：A（上一句）、S（重播）、D（下一句）、Q（自动暂停）
 
-**YouTube 字幕叠层、单词点击、播放控制栏等功能需要 Plan 2 完成后才会出现。**  
-当前 Plan 1 只完成了数据层和设置界面，内容脚本（Content Script）尚未实现。
+### ⚠️ 已知问题 / 待解决
+- 字幕解析正在调试中（已切换到 fmt=json3 格式）
+- 西语视频测试中
 
 ### 完整功能上线时间表
 
 | 功能 | 计划 | 状态 |
 |------|------|------|
 | 扩展弹窗 + 设置页面 + 档案系统 | Plan 1 | ✅ 已完成 |
-| YouTube 双语字幕叠层 | Plan 2 | 🔲 待开发 |
-| 播放控制栏（逐句跳转/重播/变速）| Plan 2 | 🔲 待开发 |
+| YouTube 双语字幕叠层 | Plan 2 | 🔄 进行中 |
+| 播放控制栏（逐句跳转/重播/变速）| Plan 2 | 🔄 进行中（UI完成，调试中） |
 | 单词点击查字典 | Plan 2/3 | 🔲 待开发 |
 | 单词颜色熟悉度标注 | Plan 3 | 🔲 待开发 |
 | 生词库 Side Panel | Plan 3 | 🔲 待开发 |
@@ -41,8 +47,8 @@ Chrome extension for language learning on YouTube. Replicates core Language Reac
 
 - **Spec:** `docs/superpowers/specs/2026-05-14-language-learning-extension-design.md`
 - **Plan 1 (Foundation):** `docs/superpowers/plans/2026-05-14-plan1-foundation.md` ✅ 完成（2026-05-14）
-- **Plan 2 (字幕+播放控制):** `docs/superpowers/plans/2026-05-14-plan2-subtitles.md` ← 下一步
-- **Plan 3 (词库+字典):** `docs/superpowers/plans/2026-05-14-plan3-vocabulary.md`
+- **Plan 2 (字幕+播放控制):** 进行中 ← 当前阶段
+- **Plan 3 (词库+字典):** 待开发
 
 ## Tech Stack
 
@@ -57,14 +63,36 @@ Chrome extension for language learning on YouTube. Replicates core Language Reac
 | Popup | `src/popup/` | ✅ Done — profile switcher + settings link |
 | Options | `src/options/` | ✅ Done — language settings + profile manager |
 | Side Panel | `src/sidepanel/` | 🔲 Stub — Plan 3 |
-| Content Script | `src/content/` | 🔲 Stub — Plan 2 |
-| Background | `src/background/` | 🔲 Stub — Plan 2 |
+| Content Script | `src/content/` | 🔄 Plan 2 进行中 |
+| Background | `src/background/` | ✅ Basic message routing |
+
+## Content Script 架构（Plan 2）
+
+```
+src/content/
+├── index.tsx                      # 入口：挂载 React 到 #movie_player
+├── components/
+│   ├── App.tsx                    # 根组件：处理 SPA 导航、状态管理
+│   ├── SubtitleOverlay/
+│   │   ├── index.tsx              # Language Reactor 风格叠层 UI
+│   │   └── SubtitleLine.tsx       # 单行字幕渲染
+│   └── ControlBar/
+│       └── index.tsx              # 播放控制栏（已合并进 Overlay）
+├── hooks/
+│   ├── useSubtitles.ts            # 字幕抓取与解析（fmt=json3）
+│   ├── usePlayback.ts             # 播放控制：当前句追踪、自动暂停
+│   └── useKeyboard.ts             # 快捷键（A/S/D/Q）
+└── utils/
+    ├── subtitleParser.ts          # JSON3 解析（主）+ XML 解析（备）
+    └── youtubeHelpers.ts          # 提取字幕轨道、URL 构建、DOM 工具
+```
 
 ## Key Abstractions
 
-- `profileManager` (`src/shared/profile.ts`) — all profile CRUD, each profile has its own settings + word store
+- `profileManager` (`src/shared/profile.ts`) — all profile CRUD
 - `storage` (`src/shared/storage.ts`) — Chrome Storage local wrapper
-- Storage key pattern: `profile_list` → ProfileStore, `words_{profileId}` → WordRecord[]
+- `useSubtitles` — 从 ytInitialPlayerResponse 提取轨道，用 fmt=json3 抓取双语字幕
+- `usePlayback` — 追踪 currentTime，计算当前句 index，自动暂停
 - `MSG` (`src/shared/messages.ts`) — cross-context message type constants
 
 ## Languages Supported (MVP)
@@ -86,9 +114,19 @@ npm run test       # watch mode
 2. Open `chrome://extensions`
 3. Enable "Developer mode"
 4. Click "Load unpacked" → select `dist/` folder
-5. Click extension icon to open popup
+5. Open a YouTube video with CC, check for subtitle overlay
 
 ## Current Test Status
 
 - `tests/shared/storage.test.ts` — 5 tests ✅
 - `tests/shared/profile.test.ts` — 15 tests ✅
+- `tests/content/subtitleParser.test.ts` — 9 tests ✅
+- `tests/content/youtubeHelpers.test.ts` — 14 tests ✅
+- **Total: 43 tests, all passing**
+
+## 字幕抓取技术说明
+
+1. **内容脚本隔离限制**：Content Script 运行在独立 JS 世界，无法直接访问 `window.ytInitialPlayerResponse`
+2. **解决方案**：解析页面 `<script>` 标签文本，用括号匹配算法提取 JSON（非正则，更健壮）
+3. **字幕格式**：使用 `fmt=json3`（JSON 格式），比 XML 更可靠；XML 作为 fallback
+4. **翻译**：使用 YouTube 原生 `&tlang={lang}` 参数获取翻译，无需第三方 API
